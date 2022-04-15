@@ -1,5 +1,6 @@
 import requests
 import utils
+from concurrent.futures import ThreadPoolExecutor, wait
 
 # Country Codes: https://www.iban.com/country-codes
 # API Doc: https://wiki.teamfortress.com/wiki/User:RJackson/StorefrontAPI#Known_methods
@@ -37,5 +38,18 @@ class SteamApp:
     }
 
   def get_price_list(self):
-    prices = [self.get_price(curr) for curr in CURRENCY_CODES]
+    # prices = [self.get_price(curr) for curr in CURRENCY_CODES]
+    # return sorted(prices, key=lambda d: d['usd'])
+
+    futures = []
+    prices = []
+
+    with ThreadPoolExecutor(max_workers=16) as executor:
+      for curr in CURRENCY_CODES:
+        futures.append(executor.submit(self.get_price, curr))
+
+      futures, _ = wait(futures)
+      for future in futures:
+        prices.append(future.result())
+
     return sorted(prices, key=lambda d: d['usd'])
