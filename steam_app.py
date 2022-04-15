@@ -46,7 +46,6 @@ class SteamApp:
                 futures.append(executor.submit(self.get_price, curr))
 
             futures, _ = wait(futures)
-            for future in futures:
-                prices.append(future.result())
+            prices = [future.result() for future in futures]
 
         return sorted(prices, key=lambda d: d['usd'])
