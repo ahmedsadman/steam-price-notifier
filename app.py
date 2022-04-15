@@ -1,5 +1,6 @@
 from win10toast import ToastNotifier
 from steam_app import SteamApp
+from storage import Storage
 
 STEAM_IDS = ['1506830', '359550']
 
@@ -7,15 +8,22 @@ class App:
     def __init__(self):
         self.toast = ToastNotifier()
         self.apps = [SteamApp(app_id) for app_id in STEAM_IDS]
+        self.storage = Storage()
 
     def notify(self, name, price):
         self.toast.show_toast(
-            f'"{name}" Price Drop',
-            f'As low as {price} today',
+            f'{name} in {price}',
+            'This is the lowest price',
             threaded = False,
         )
 
     def check_price(self):
         for app in self.apps:
-            lowest_price = f'{app.get_price_list()[0]["usd"]}$'
-            self.notify(app.name, lowest_price)
+            current_price = app.get_price_list()[0]['usd']
+            formatted_price = f'{current_price}$'
+            prev_data = self.storage.get(app.app_id)
+
+            if not prev_data or float(prev_data['price']) != current_price:
+                self.storage.upsert(app.app_id, app.name, current_price)
+
+            self.notify(app.name, formatted_price)
