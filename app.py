@@ -23,7 +23,8 @@ class App:
             formatted_price = f'{current_price}$'
             prev_data = self.storage.get(app.app_id)
 
-            if not prev_data or float(prev_data['price']) != current_price:
-                self.storage.upsert(app.app_id, app.name, current_price)
+            if prev_data and current_price < float(prev_data['price']):
+                self.notify(app.name, formatted_price)
 
-            self.notify(app.name, formatted_price)
+            if not prev_data or float(prev_data['price']) != current_price:
+                prev_data = self.storage.upsert(app.app_id, app.name, current_price)

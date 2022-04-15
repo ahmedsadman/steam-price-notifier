@@ -47,8 +47,10 @@ class Storage:
                 found = True
                 break
         
+        new_item = {'app_id': app_id, 'name': name, 'price': new_price}
         if not found:
-            data.append({'app_id': app_id, 'name': name, 'price': new_price})
+            data.append(new_item)
 
         self._write(data)
+        return new_item
 
