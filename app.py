@@ -14,6 +14,7 @@ class App:
         self.toast.show_toast(
             f'{name} in {price}',
             'This is the lowest price',
+            icon_path='steam-icon.ico',
             threaded = False,
         )
 

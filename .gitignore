@@ -1,3 +1,6 @@
 venv
 __pycache__
 *.csv
+*.exe
+build
+dist
