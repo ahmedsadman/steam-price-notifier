@@ -1,6 +1,7 @@
 from win10toast import ToastNotifier
 from steam_app import SteamApp
 from storage import Storage
+from email_notifier import Email
 
 STEAM_IDS = ['1506830', '359550']
 
@@ -17,6 +18,7 @@ class App:
             icon_path='steam-icon.ico',
             threaded = False,
         )
+        Email.notify_price_drop(name, price)
 
     def check_price(self):
         for app in self.apps:
