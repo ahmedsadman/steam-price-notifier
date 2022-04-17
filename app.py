@@ -1,14 +1,18 @@
+import os
+from dotenv import load_dotenv
 from win10toast import ToastNotifier
 from steam_app import SteamApp
 from storage import Storage
 from email_notifier import Email
 
-STEAM_IDS = ['1506830', '359550']
+load_dotenv()
+
+STEAM_IDS = os.environ.get('APP_IDS', '')
 
 class App:
     def __init__(self):
         self.toast = ToastNotifier()
-        self.apps = [SteamApp(app_id) for app_id in STEAM_IDS]
+        self.apps = [SteamApp(app_id) for app_id in STEAM_IDS.split(',')]
         self.storage = Storage()
 
     def notify(self, name, price):
